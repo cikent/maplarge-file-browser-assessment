@@ -14,7 +14,10 @@ A C# ASP.NET Core API and vanilla JavaScript single-page application for safely 
 - [Performance and complexity](#performance-and-complexity)
 - [Tradeoffs](#tradeoffs)
 - [AI use disclosure](docs/ai-usage.md)
-- [Backend source](TestProject/) and [automated tests](TestProject.Tests/)
+- [Backend project](TestProject/TestProject.csproj),
+  [application entry point](TestProject/Program.cs),
+  [service tests](TestProject.Tests/FileBrowserServiceTests.cs), and
+  [API tests](TestProject.Tests/FileBrowserApiTests.cs)
 - [Core-code interview guide](docs/interview-guide.md) and [5–7 minute demo script](docs/demo-script.md)
 
 ## Quick start

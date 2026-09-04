@@ -1,0 +1,1 @@
+Quality Cube dimensions: functionality, correctness, security, usability, performance, maintainability.

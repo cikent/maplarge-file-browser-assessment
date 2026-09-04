@@ -1,10 +1,143 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A safe, quality-engineered browser for one configured server directory." />
+    <title>Quality File Browser</title>
+    <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    Hello World!
+    <a class="skip-link" href="#main-content">Skip to file browser</a>
+
+    <header class="site-header">
+        <div class="brand">
+            <div class="quality-cube" aria-hidden="true">
+                <span class="cube-top"></span>
+                <span class="cube-left"></span>
+                <span class="cube-right"></span>
+            </div>
+            <div>
+                <p class="eyebrow">MapLarge Test Project</p>
+                <h1>Quality File Browser</h1>
+                <p class="tagline">Safe filesystem operations, measurable quality, practical business value.</p>
+            </div>
+        </div>
+        <details class="quality-details">
+            <summary>Quality Cube</summary>
+            <p>Functionality · Correctness · Security · Usability · Performance · Maintainability</p>
+        </details>
+    </header>
+
+    <main id="main-content" class="page-shell">
+        <section class="browser-panel" aria-labelledby="browser-heading">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Configured server home</p>
+                    <h2 id="browser-heading">Files and folders</h2>
+                </div>
+                <button id="refresh-button" class="button button-secondary" type="button">Refresh</button>
+            </div>
+
+            <nav id="breadcrumbs" class="breadcrumbs" aria-label="Current folder"></nav>
+
+            <form id="search-form" class="search-bar" role="search">
+                <label class="sr-only" for="search-input">Search within the current folder</label>
+                <input id="search-input" name="query" type="search" placeholder="Search files and folders" autocomplete="off" />
+                <button class="button button-primary" type="submit">Search</button>
+                <button id="clear-search-button" class="button button-secondary" type="button" hidden>Clear</button>
+            </form>
+
+            <div class="toolbar" aria-label="File operations">
+                <button id="create-folder-button" class="button button-secondary" type="button">New folder</button>
+                <button id="upload-button" class="button button-secondary" type="button">Upload file</button>
+                <input id="upload-input" type="file" hidden />
+                <label class="checkbox-label">
+                    <input id="overwrite-upload" type="checkbox" />
+                    Replace same-named file
+                </label>
+            </div>
+
+            <div id="status-message" class="status-message" role="status" aria-live="polite"></div>
+
+            <section class="summary-grid" aria-label="Current view summary">
+                <div class="summary-card"><strong id="folder-count">0</strong><span id="folder-label">Folders</span></div>
+                <div class="summary-card"><strong id="file-count">0</strong><span id="file-label">Files</span></div>
+                <div class="summary-card"><strong id="total-size">0 B</strong><span>File size</span></div>
+            </section>
+
+            <p id="table-scroll-help" class="table-scroll-help">Scroll horizontally to view details and row actions.</p>
+            <div class="table-scroll" tabindex="0" role="region" aria-label="File results" aria-describedby="table-scroll-help">
+                <table>
+                    <caption id="table-caption">Contents of Home</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Size</th>
+                            <th scope="col">Modified</th>
+                            <th scope="col" aria-label="Actions"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="entry-list"></tbody>
+                </table>
+                <p id="empty-message" class="empty-message" hidden>No entries in this view.</p>
+            </div>
+        </section>
+    </main>
+
+    <dialog id="create-folder-dialog">
+        <form id="create-folder-form" method="dialog">
+            <div class="dialog-heading">
+                <h2>New folder</h2>
+                <button class="icon-button" value="cancel" formnovalidate aria-label="Close dialog">×</button>
+            </div>
+            <p>Create a folder inside <strong id="create-parent-label">Home</strong>.</p>
+            <label for="folder-name">Folder name</label>
+            <input id="folder-name" name="name" required maxlength="120" autocomplete="off" />
+            <div class="dialog-actions">
+                <button class="button button-secondary" value="cancel" formnovalidate>Cancel</button>
+                <button class="button button-primary" value="submit">Create</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="transfer-dialog">
+        <form id="transfer-form" method="dialog">
+            <div class="dialog-heading">
+                <h2 id="transfer-title">Move entry</h2>
+                <button class="icon-button" value="cancel" formnovalidate aria-label="Close dialog">×</button>
+            </div>
+            <p id="transfer-source-label"></p>
+            <label for="destination-directory">Destination folder <span>(relative to Home)</span></label>
+            <input id="destination-directory" name="destination" placeholder="Leave blank for Home" autocomplete="off" />
+            <label for="destination-name">Destination name</label>
+            <input id="destination-name" name="newName" required maxlength="120" autocomplete="off" />
+            <div class="dialog-actions">
+                <button class="button button-secondary" value="cancel" formnovalidate>Cancel</button>
+                <button id="transfer-submit" class="button button-primary" value="submit">Move</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="delete-dialog">
+        <form id="delete-form" method="dialog">
+            <div class="dialog-heading">
+                <h2>Delete entry</h2>
+                <button class="icon-button" value="cancel" formnovalidate aria-label="Close dialog">×</button>
+            </div>
+            <p>Delete <strong id="delete-source-label"></strong>? This cannot be undone.</p>
+            <label id="recursive-delete-label" class="checkbox-label" hidden>
+                <input id="recursive-delete" type="checkbox" />
+                Delete folder contents recursively
+            </label>
+            <div class="dialog-actions">
+                <button class="button button-secondary" value="cancel" formnovalidate>Cancel</button>
+                <button class="button button-danger" value="submit">Delete</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script type="module" src="scripts/app.js"></script>
 </body>
 </html>
